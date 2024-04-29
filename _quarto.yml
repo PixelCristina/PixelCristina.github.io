@@ -21,6 +21,13 @@ website:
         text: Assignment 4
       - href: Lab04_UL.qmd
         text: Assignment 5
+      - href: Assignment6.qmd
+        text: Assignment 6
+      - href: Assignment7.qmd
+        text: Assignment 7
+      - href: Assignment8.qmd
+        text: Assignment 8
+        
       
 format:
   html:

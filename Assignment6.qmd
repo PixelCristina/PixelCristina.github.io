@@ -1,0 +1,80 @@
+---
+title: "Assignment 6"
+code-fold: true
+---
+
+```{r}
+# Load the haven package or install it if it's not already installed
+if (!require(haven)) {
+  install.packages("haven")
+  library(haven)
+}
+
+# Define the URL for the dataset
+url <- "https://github.com/datageneration/home/blob/master/DataProgramming/data/TEDS_2016.dta?raw=true"
+
+# Try to read the dataset from the URL
+try({
+  TEDS_2016 <- read_stata(url)
+  print("Dataset loaded successfully.")
+}, silent = FALSE)
+
+# Check if the dataset has been loaded and print its structure
+if (exists("TEDS_2016")) {
+  print("Checking the dataset structure...")
+  str(TEDS_2016)
+} else {
+  print("Failed to load the dataset.")
+}
+
+```
+
+## Logistic Regression Model
+
+```{r}
+glm.vt <- glm(votetsai ~ female, data=TEDS_2016, family=binomial)
+summary(glm.vt)
+plot(glm.vt)
+
+
+```
+
+## Improve the model
+
+```{r}
+glm.expanded <- glm(votetsai ~ female + KMT + DPP + Age + Edu + income, data=TEDS_2016, family=binomial)
+summary(glm.expanded)
+
+```
+
+## Summarize the data
+
+```{r}
+# Summary of the model to check coefficients and statistics
+summary(glm.expanded)
+
+# Plot the model diagnostics
+plot(glm.expanded)
+```
+
+The group of variables that work best in explaining or predicting votes for Tsai Ing-wen is party affiliation (KMT, DPP). This is followed by demographic variables like age and education, which also play a significant role but are less predictive compared to party loyalty. Gender and income, in this analysis, do not appear to have significant impacts on voting for Tsai.
+
+```{r}
+# Fit the logistic regression model with expanded predictors
+glm.full <- glm(votetsai ~ female + KMT + DPP + age + edu + income + Independence + Econ_worse + Govt_dont_care + Minnan_father + Mainland_father + Taiwanese, data=TEDS_2016, family=binomial)
+
+# View the summary of the model
+summary(glm.full)
+```
+
+-   **Partisan Loyalty and Political Ideology**: The model strongly indicates that political alignment (DPP, KMT) and views on independence are the most influential factors in predicting voter support for Tsai Ing-wen. These factors outweigh demographic variables like age, education, and income in this analysis.
+
+-   **Ethnic and National Identity**: The significant effects of variables like **`Taiwanese`** and **`Mainland_father`** underscore the importance of ethnic and national identity in Taiwan's political landscape, particularly in the context of cross-strait relations and national identity.
+
+-   **Potential for Further Analysis**: While gender, age, education, and income are not significant predictors in this model, their interactions with other variables (like party affiliation or independence) might provide additional insights. Additionally, checking for multicollinearity and interaction effects could further refine the understanding of these relationships.
+
+```{}
+```
+
+```         
+```
