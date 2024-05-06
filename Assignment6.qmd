@@ -73,7 +73,7 @@ summary(glm.full)
 
 -   **Potential for Further Analysis**: While gender, age, education, and income are not significant predictors in this model, their interactions with other variables (like party affiliation or independence) might provide additional insights. Additionally, checking for multicollinearity and interaction effects could further refine the understanding of these relationships.
 
-```{}
+```         
 ```
 
 ```         

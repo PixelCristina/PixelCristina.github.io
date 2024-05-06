@@ -73,8 +73,7 @@ d\. **Sensitivity and Specificity**:
 
 -   **Sensitivity**: The ability to correctly identify actual positives.
 
--   **Specificity**: The ability to correctly identify actual negatives.
-    The importance of each depends on the specific application, e.g., sensitivity is crucial in medical diagnostics to not miss any cases of disease.
+-   **Specificity**: The ability to correctly identify actual negatives. The importance of each depends on the specific application, e.g., sensitivity is crucial in medical diagnostics to not miss any cases of disease.
 
 e\. **Classification Metrics**: The critical metric for prediction depends on the consequences of false positives and false negatives, varying by context like healthcare or finance.
 

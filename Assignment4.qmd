@@ -116,4 +116,87 @@ arrest.hc <- USArrests %>%
   hclust(method = "ward.D2")     # Compute hierarchical clustering
 
 
+
 ```
+
+```{r}
+
+library(readxl)
+Reddit_DATA_for_LinearRegression <- read_excel("~/Desktop/spreadsheets/Reddit_DATA_for LinearRegression.xlsx")
+View(Reddit_DATA_for_LinearRegression)
+
+```
+
+```{r}
+summary<-summarise(Reddit_DATA_for_LinearRegression)
+
+grouped<- Reddit_DATA_for_LinearRegression %>%
+  group_by(Subreddit) %>%
+  summarise(avgPolarity = mean(Polarity),avgSubjectivity = mean(Subjectivity))
+
+
+```
+
+
+```{r}
+# Create a function to compute and plot total within-cluster sum of square (withinss)
+clustering_data <- select(grouped, avgPolarity, avgSubjectivity)
+wssplot(clustering_data)
+
+
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Assuming 'grouped' and 'clustering_data' are already defined from previous steps
+# Run k-means clustering
+set.seed(123)  # For reproducibility
+kmeans_result <- kmeans(clustering_data, centers=3)
+
+# Add cluster assignments to the original data frame
+grouped$cluster <- as.factor(kmeans_result$cluster)
+
+# Define centroids
+centroids <- as.data.frame(kmeans_result$centers)
+colnames(centroids) <- c("avgPolarity", "avgSubjectivity")
+
+# Plot the clusters with points for each data and centroids
+ggplot(grouped, aes(x = avgPolarity, y = avgSubjectivity, color = cluster)) +
+  geom_point(alpha=0.5, size=3) +  # Plot the data points
+  geom_point(data = centroids, aes(x = avgPolarity, y = avgSubjectivity), color = "black", size = 10, shape = 8) +  # Plot centroids
+  labs(title = "Cluster Plot with Centroids",
+       x = "Average Polarity",
+       y = "Average Subjectivity",
+       color = "Cluster") +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1")  # Use a distinct color palette
+
+
+```
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Assuming 'grouped' and 'centroids' are already defined and include the required columns
+# Plot the clusters with points for each data, centroids, and add subreddit labels
+ggplot(grouped, aes(x = avgPolarity, y = avgSubjectivity, color = cluster)) +
+  geom_point(alpha=0.5, size=3) +  # Plot the data points
+  geom_point(data = centroids, aes(x = avgPolarity, y = avgSubjectivity), color = "black", size = 10, shape = 8) +  # Plot centroids
+  geom_text(aes(label = Subreddit), vjust = 1.5, hjust = 0.5, color = "black", size = 3) +  # Add subreddit labels
+  labs(title = "Cluster Plot with Centroids",
+       x = "Average Polarity",
+       y = "Average Subjectivity",
+       color = "Cluster") +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1")  # Use a distinct color palette
+
+```
+Here i Applied average Subjectivity and Polarity scores of subreddits, they are grouped together using k means clusteing. Looks like an outlier i might have to look at is Apple, movies, prosic and programming. 
+
+Some subreddits that seem to have grouped together is 
+
+1. World news, philospohy and askcience
+2. machine learning futorology and machining learning  and science
