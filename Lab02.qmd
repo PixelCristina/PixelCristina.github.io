@@ -3,6 +3,9 @@ title: "EPPS 6323: Lab02 R programming basics II"
 author: "Cristina Rivera"
 format: html
 editor: visual
+execute:
+  echo: false
+  warning: false
 ---
 
 # R Programming Basic Commands

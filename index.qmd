@@ -1,9 +1,36 @@
 ---
 title: "Cristina's Website"
+execute:
+  echo: false
+  warning: false
 ---
 
-This is my website
+## This is my website for Data mining class welcome
 
 ```{r}
-1 + 1
+# Install and load necessary packages
+if (!require("ggplot2")) install.packages("ggplot2", dependencies=TRUE)
+library(ggplot2)
+
+# Create a data frame with example cookie data
+days <- 0:7
+cookie_data <- data.frame(
+  Day = rep(days, times=3),
+  Cookies = c(10, 9, 8, 6, 5, 3, 2, 0, 10, 9, 7, 4, 2, 1, 0, 0, 10, 9, 8, 7, 5, 4, 3, 1),
+  Type = rep(c("Chocolate Chip", "Oatmeal Raisin", "Sugar"), each=8)
+)
+
+# Generate the line chart
+ggplot(cookie_data, aes(x = Day, y = Cookies, color = Type)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 3) +
+  scale_color_manual(values = c("Chocolate Chip" = "#6b4226", "Oatmeal Raisin" = "#c89f5a", "Sugar" = "#f7ebc6")) +
+  labs(title = "Survival Rates of Cookies in a Pantry",
+       subtitle = "A cookie countdown to extinction",
+       x = "Days in Pantry",
+       y = "Number of Cookies Remaining",
+       color = "Cookie Type") +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  annotate("text", x = 4, y = 1, label = "Critical extinction event", color = "red", size = 4, angle = 0, fontface = "italic")
 ```

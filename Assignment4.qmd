@@ -1,5 +1,8 @@
 ---
 title: "Assignment4"
+execute:
+  echo: false
+  warning: false
 ---
 
 ```{r}
@@ -136,7 +139,6 @@ grouped<- Reddit_DATA_for_LinearRegression %>%
 
 ```
 
-
 ```{r}
 # Create a function to compute and plot total within-cluster sum of square (withinss)
 clustering_data <- select(grouped, avgPolarity, avgSubjectivity)
@@ -144,7 +146,6 @@ wssplot(clustering_data)
 
 
 ```
-
 
 ```{r}
 library(dplyr)
@@ -175,6 +176,7 @@ ggplot(grouped, aes(x = avgPolarity, y = avgSubjectivity, color = cluster)) +
 
 
 ```
+
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -193,9 +195,10 @@ ggplot(grouped, aes(x = avgPolarity, y = avgSubjectivity, color = cluster)) +
   scale_color_brewer(palette = "Set1")  # Use a distinct color palette
 
 ```
-Here i Applied average Subjectivity and Polarity scores of subreddits, they are grouped together using k means clusteing. Looks like an outlier i might have to look at is Apple, movies, prosic and programming. 
 
-Some subreddits that seem to have grouped together is 
+Here i Applied average Subjectivity and Polarity scores of subreddits, they are grouped together using k means clusteing. Looks like an outlier i might have to look at is Apple, movies, prosic and programming.
 
-1. World news, philospohy and askcience
-2. machine learning futorology and machining learning  and science
+Some subreddits that seem to have grouped together is
+
+1.  World news, philospohy and askcience
+2.  machine learning futorology and machining learning and science

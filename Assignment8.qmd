@@ -1,6 +1,8 @@
 ---
 title: "Assignment 8"
-code-fold: true
+execute:
+  echo: false
+  warning: false
 ---
 
 ```{r}

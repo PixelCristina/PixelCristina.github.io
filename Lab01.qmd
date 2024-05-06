@@ -1,8 +1,11 @@
 ---
 title: "EPPS 6323: Lab01 R programming basics I"
-author: "My name"
+author: Cristina Rivera"
 format: html
 editor: visual
+execute:
+  echo: false
+  warning: false
 ---
 
 # R Programming Basic Commands

@@ -3,6 +3,9 @@ title: "EPPS 6323: Lab02 R programming (Exploratory Data Analysis)"
 author: "Cristina Rivera"
 format: html
 editor: visual
+execute:
+  echo: false
+  warning: false
 ---
 
 ## Assignmtnet 3 Part 1
@@ -148,4 +151,5 @@ c\. Income
 results<- regplot(TEDS_2016$age,TEDS_2016$DPP)
 results2<- regplot(TEDS_2016$age,TEDS_2016$edu)
 ```
+
 The problem it looks like with my variables is that it doesn't seem like plotting a linear regression is enough and there might need to be a multinomial logistic regression. Since some of the variables are discrete, a simple regression might not be enough.
