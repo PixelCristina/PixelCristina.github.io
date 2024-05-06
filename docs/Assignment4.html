@@ -473,6 +473,93 @@ Attaching package: 'gridExtra'</code></pre>
 <span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dist</span>(<span class="at">method =</span> <span class="st">"euclidean"</span>) <span class="sc">%&gt;%</span> <span class="co"># Compute dissimilarity matrix</span></span>
 <span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hclust</span>(<span class="at">method =</span> <span class="st">"ward.D2"</span>)     <span class="co"># Compute hierarchical clustering</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Reddit_DATA_for_LinearRegression <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"~/Desktop/spreadsheets/Reddit_DATA_for LinearRegression.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>summary<span class="ot">&lt;-</span><span class="fu">summarise</span>(Reddit_DATA_for_LinearRegression)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>grouped<span class="ot">&lt;-</span> Reddit_DATA_for_LinearRegression <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Subreddit) <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avgPolarity =</span> <span class="fu">mean</span>(Polarity),<span class="at">avgSubjectivity =</span> <span class="fu">mean</span>(Subjectivity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a function to compute and plot total within-cluster sum of square (withinss)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>clustering_data <span class="ot">&lt;-</span> <span class="fu">select</span>(grouped, avgPolarity, avgSubjectivity)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wssplot</span>(clustering_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Assignment4_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming 'grouped' and 'clustering_data' are already defined from previous steps</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Run k-means clustering</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># For reproducibility</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>kmeans_result <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(clustering_data, <span class="at">centers=</span><span class="dv">3</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add cluster assignments to the original data frame</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>grouped<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(kmeans_result<span class="sc">$</span>cluster)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Define centroids</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>centroids <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(kmeans_result<span class="sc">$</span>centers)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(centroids) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"avgPolarity"</span>, <span class="st">"avgSubjectivity"</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the clusters with points for each data and centroids</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(grouped, <span class="fu">aes</span>(<span class="at">x =</span> avgPolarity, <span class="at">y =</span> avgSubjectivity, <span class="at">color =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Plot the data points</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> centroids, <span class="fu">aes</span>(<span class="at">x =</span> avgPolarity, <span class="at">y =</span> avgSubjectivity), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">shape =</span> <span class="dv">8</span>) <span class="sc">+</span>  <span class="co"># Plot centroids</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cluster Plot with Centroids"</span>,</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Average Polarity"</span>,</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Subjectivity"</span>,</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Cluster"</span>) <span class="sc">+</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)  <span class="co"># Use a distinct color palette</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Assignment4_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming 'grouped' and 'centroids' are already defined and include the required columns</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the clusters with points for each data, centroids, and add subreddit labels</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(grouped, <span class="fu">aes</span>(<span class="at">x =</span> avgPolarity, <span class="at">y =</span> avgSubjectivity, <span class="at">color =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Plot the data points</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> centroids, <span class="fu">aes</span>(<span class="at">x =</span> avgPolarity, <span class="at">y =</span> avgSubjectivity), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">shape =</span> <span class="dv">8</span>) <span class="sc">+</span>  <span class="co"># Plot centroids</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Subreddit), <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Add subreddit labels</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cluster Plot with Centroids"</span>,</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Average Polarity"</span>,</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average Subjectivity"</span>,</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Cluster"</span>) <span class="sc">+</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)  <span class="co"># Use a distinct color palette</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Assignment4_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here i Applied average Subjectivity and Polarity scores of subreddits, they are grouped together using k means clusteing. Looks like an outlier i might have to look at is Apple, movies, prosic and programming.</p>
+<p>Some subreddits that seem to have grouped together is</p>
+<ol type="1">
+<li>World news, philospohy and askcience</li>
+<li>machine learning futorology and machining learning and science</li>
+</ol>
 
 
 

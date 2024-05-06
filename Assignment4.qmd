@@ -123,7 +123,6 @@ arrest.hc <- USArrests %>%
 
 library(readxl)
 Reddit_DATA_for_LinearRegression <- read_excel("~/Desktop/spreadsheets/Reddit_DATA_for LinearRegression.xlsx")
-View(Reddit_DATA_for_LinearRegression)
 
 ```
 
